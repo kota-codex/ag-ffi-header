@@ -9,7 +9,7 @@
 // Robinhood hashing
 //
 
-#include "runtime.h"
+#include "ag-ffi-header/runtime.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -34,11 +34,6 @@ typedef struct {
     size_t       capacity; // must be power of 2
     size_t       size;
 } AgMap;
-
-size_t ag_map_find_index(
-    AgMap* map,
-    AgObject* key,
-    size_t hash);
 
 #ifdef __cplusplus
 }  // extern "C"

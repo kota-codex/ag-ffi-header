@@ -1,6 +1,6 @@
 #ifndef AG_ARRAY_BASE_H_
 #define AG_ARRAY_BASE_H_
-#include "runtime.h"
+#include "ag-ffi-header/runtime.h"
 
 typedef struct {
 	AgObject head;
