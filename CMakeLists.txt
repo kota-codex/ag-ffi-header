@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
-project(ag-ffi-heder LANGUAGES CXX)
+project(ag_ffi_header)
 
-add_library(ag-ffi-heder INTERFACE)
+add_library(ag_ffi_header INTERFACE)
 
-target_include_directories(ag-ffi-heder
+target_include_directories(ag_ffi_header
     INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        $<INSTALL_INTERFACE:ag-ffi-header/include>
 )
-
-target_compile_features(ag-ffi-heder INTERFACE cxx_std_17)
