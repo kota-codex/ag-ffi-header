@@ -35,15 +35,25 @@ function(ag_ffi_configure_target ag_target ag_file_name)
     endif()
 
     set(seen_targets "")
-    set(result_files "")
     function(_collect_recursive tgt)
         if (tgt IN_LIST seen_targets)
             return()
         endif()
         list(APPEND seen_targets "${tgt}")
-        list(APPEND result_files $<TARGET_FILE:${tgt}>)
-        list(APPEND result_files $<TARGET_IMPLIB:${tgt}>)
-        list(APPEND result_files $<TARGET_PDB_FILE:${tgt}>)
+        add_custom_command(TARGET ${ag_target} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${tgt}> ${DST}
+        )
+        get_target_property(type ${ag_target} TYPE)
+        if(WIN32 AND (type STREQUAL "SHARED_LIBRARY" OR type STREQUAL "IMPORTED_LIBRARY"))
+            add_custom_command(TARGET ${ag_target} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_IMPLIB:${tgt}> ${DST}
+            )
+        endif()
+        if (MSVC)
+            add_custom_command(TARGET ${ag_target} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PDB_FILE:${tgt}> ${DST}
+            )
+        endif()
         get_target_property(_libs ${tgt} INTERFACE_LINK_LIBRARIES)
         if (_libs)
             foreach(dep IN LISTS _libs)
@@ -53,12 +63,5 @@ function(ag_ffi_configure_target ag_target ag_file_name)
             endforeach()
         endif()
     endfunction()
-
     _collect_recursive(${ag_target})
-    list(REMOVE_DUPLICATES result_files)
-    foreach(f IN LISTS result_files)
-        add_custom_command(TARGET ${ag_target} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${f}" "${DST}"
-        )
-    endforeach()
 endfunction()
