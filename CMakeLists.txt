@@ -34,34 +34,20 @@ function(ag_ffi_configure_target ag_target ag_file_name)
         )
     endif()
 
-    set(seen_targets "")
-    function(_collect_recursive tgt)
-        if (tgt IN_LIST seen_targets)
-            return()
-        endif()
-        list(APPEND seen_targets "${tgt}")
+    if(config STREQUAL "Release")
+        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/bin")
+        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/lib")
+    else() # Debug
+        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/debug/bin")
+        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/debug/lib")
+    endif()
+    file(GLOB dlls "${bin_dir}/*.dll" "${bin_dir}/*.so")
+    file(GLOB pdbs "${bin_dir}/*.pdb")
+    file(GLOB libs "${lib_dir}/*.lib" "${lib_dir}/*.a")
+    set(artifacts ${dlls} ${pdbs} ${libs})
+    foreach(f IN LISTS artifacts)
         add_custom_command(TARGET ${ag_target} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${tgt}> ${DST}
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${f} ${DST}
         )
-        get_target_property(type ${ag_target} TYPE)
-        if(WIN32 AND (type STREQUAL "SHARED_LIBRARY" OR type STREQUAL "IMPORTED_LIBRARY"))
-            add_custom_command(TARGET ${ag_target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_IMPLIB:${tgt}> ${DST}
-            )
-        endif()
-        if (MSVC)
-            add_custom_command(TARGET ${ag_target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PDB_FILE:${tgt}> ${DST}
-            )
-        endif()
-        get_target_property(_libs ${tgt} INTERFACE_LINK_LIBRARIES)
-        if (_libs)
-            foreach(dep IN LISTS _libs)
-                if (TARGET ${dep})
-                    _collect_recursive(${dep})
-                endif()
-            endforeach()
-        endif()
-    endfunction()
-    _collect_recursive(${ag_target})
+    endforeach()
 endfunction()
