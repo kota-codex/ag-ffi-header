@@ -34,7 +34,7 @@ function(ag_ffi_configure_target ag_target ag_file_name)
         )
     endif()
 
-    if(config STREQUAL "Release")
+    if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/bin")
         set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/lib")
     else() # Debug
