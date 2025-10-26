@@ -18,8 +18,8 @@ function(ag_ffi_configure_target ag_target ag_file_name)
         $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:-fno-exceptions>
     )
 
-    set(DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR}/${AG_TRIPLE}/$<CONFIG>,${CMAKE_BINARY_DIR}>")
-    set(AG_DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR},${CMAKE_BINARY_DIR}>")
+    set(DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR}/${AG_TRIPLE}/$<CONFIG>,${CMAKE_CURRENT_SOURCE_DIR}/out>")
+    set(AG_DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR},${CMAKE_CURRENT_SOURCE_DIR}>/out")
     set_target_properties(${ag_target} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${DST}"
         LIBRARY_OUTPUT_DIRECTORY "${DST}"
@@ -35,11 +35,11 @@ function(ag_ffi_configure_target ag_target ag_file_name)
     endif()
 
     if(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/bin")
-        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/lib")
+        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/bin")
+        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/lib")
     else() # Debug
-        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/debug/bin")
-        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${AG_TRIPLE}/debug/lib")
+        set(bin_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/debug/bin")
+        set(lib_dir "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/debug/lib")
     endif()
     file(GLOB dlls "${bin_dir}/*.dll" "${bin_dir}/*.so")
     file(GLOB pdbs "${bin_dir}/*.pdb")
