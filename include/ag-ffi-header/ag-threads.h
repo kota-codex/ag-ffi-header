@@ -10,7 +10,7 @@ static inline uint64_t timespec_to_ms(const struct timespec* time) {
 
 typedef void* (*ag_thread_start_t) (void*);
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #include <windows.h>
 
