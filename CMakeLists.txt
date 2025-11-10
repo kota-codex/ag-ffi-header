@@ -18,7 +18,7 @@ function(ag_ffi_configure_target ag_target ag_file_name)
         $<$<CXX_COMPILER_ID:GNU,Clang,AppleClang>:-fno-exceptions>
     )
 
-    set(DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR}/${AG_TRIPLE}/$<CONFIG>,${CMAKE_CURRENT_SOURCE_DIR}/../out/lib/${ag_target}>")
+    set(DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR}/${AG_TRIPLE}/$<CONFIG>,${CMAKE_CURRENT_SOURCE_DIR}/../out/lib/${ag_target}/$<CONFIG>>")
     set(AG_DST "$<IF:$<BOOL:${AG_TRIPLE}>,${AG_OUT_DIR},${CMAKE_CURRENT_SOURCE_DIR}>/../out/lib/${ag_target}")
     set_target_properties(${ag_target} PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY "${DST}"
