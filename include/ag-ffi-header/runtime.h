@@ -94,11 +94,7 @@ typedef struct {
 	uintptr_t       wb_p;        // pointer_to_weak_block | (pointer_to_parent|AG_F_PARENT)
 } AgObject;
 
-#ifdef AG_STANDALONE_COMPILER_MODE
 void** ag_disp_sys_String(uint64_t interface_and_method_ordinal);
-#else
-extern ag_dispatcher_t ag_disp_sys_String;
-#endif
 
 typedef struct {
 	AgObject*  target;
