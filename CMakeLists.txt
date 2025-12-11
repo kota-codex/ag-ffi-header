@@ -12,6 +12,7 @@ target_include_directories(ag_ffi_header
 # Applies to the target dependency on ffi header, adds no-except, adds output dirs, copies ag and windows dlls
 function(ag_ffi_configure_target ag_target ag_file_name)
     set_property(TARGET ${ag_target} PROPERTY C_STANDARD 11)
+    set_target_properties(${ag_target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_link_libraries(${ag_target} PRIVATE ag_ffi_header)
     target_compile_options(${ag_target} PRIVATE
         $<$<CXX_COMPILER_ID:MSVC>:/EHs-c->
